@@ -43,8 +43,8 @@ function buttonAction(clickEvent){
             case 'clear':
                 display.value = 0;
                 operation = '';
-                opA = '';
-                opB = '';
+                a = undefined;
+                b = undefined;
                 break;
             case 'decimal': 
                 if (display.value.search(/\./) == -1){
@@ -55,22 +55,31 @@ function buttonAction(clickEvent){
                 display.value = display.value * -1;
                 break;
             case 'operate':
-                opB = display.value;
-                console.log(opA);
-                console.log(operation);
-                console.log(opB);
-                console.log(operate(operation,opA,opB));
-                display.value = operate(operation,opA,opB);
-                opA = display.value;
+                if (operatorEntered){
+                    b = display.value;
+                }
+                if(a){
+                    console.log(a,b);
+                    console.log(operation);
+                    display.value = operate(operation, a, b);
+                    a = display.value;
+                }
+                
                 nextOperand = true;
-                operation = '';
+                operatorEntered = false;
+                //operation = '';
                 break;
             default:
-                
-                opA = display.value;
-                operation = action;
+                console.log(a, operatorEntered, action);
+                if(a && operatorEntered){
+                    b = display.value;
+                    display.value = operate(operation, a, b);
+                    console.log("operated");
+                }
+                a = display.value;
+                operatorEntered = true;
                 nextOperand = true;
-                
+                operation = action;
         }
     }else{
         printNumber(action);
@@ -90,8 +99,9 @@ const buttons = Array.from(document.getElementsByClassName('number'));
 const display = document.getElementById('display');
 let operation = '';
 let nextOperand = false;
-let opA = '';
-let opB = '';
+let operatorEntered = false;
+let a = undefined;
+let b = undefined;
 
 display.value = 0;
 
